@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const { format_date } = require('../utils/helpers');
 const mongoose = require('mongoose');
 
-var Schema2 = mongoose.Schema,
+var Schema2 = mongoose.Types,
     ObjectId = Schema2.ObjectId;
     const newId = new Schema2.ObjectId;
 
