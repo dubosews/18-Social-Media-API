@@ -1,16 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const { Note } = require('./models');
+const User = require('./models/User');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 mongoose.connect(
-  process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/Notedb',
+  process.env.MONGODB_URI || 'mongodb+srv://mernTestadmin:mernTestadmin@unc-bc-merntest-cluster.4q8ii.mongodb.net/dubosews_C18?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -19,53 +20,7 @@ mongoose.connect(
 
 mongoose.set('debug', true);
 
-app.post('/submit', ({ body }, res) => {
-  Note.create(body)
-    .then(dbNote => {
-      res.json(dbNote);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
-
-app.get('/all', (req, res) => {
-  Note.find({})
-    .then(dbNote => {
-      res.json(dbNote);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
-
-app.post('/update/:id', ({ params, body }, res) => {
-  Note.findOneAndUpdate({ _id: params.id }, body, { new: true })
-    .then(dbNote => {
-      if (!dbNote) {
-        res.json({ message: 'No note found with this id!' });
-        return;
-      }
-      res.json(dbNote);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
-
-app.delete('/delete/:id', ({ params }, res) => {
-  Note.findOneAndDelete({ _id: params.id })
-    .then(dbNote => {
-      if (!dbNote) {
-        res.json({ message: 'No note found with this id!' });
-        return;
-      }
-      res.json(dbNote);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
+app.use(routes);
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
